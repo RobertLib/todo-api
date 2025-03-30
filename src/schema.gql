@@ -1,0 +1,57 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type Todo {
+  """The unique identifier of the todo item"""
+  id: Int!
+
+  """The title of the todo item"""
+  title: String!
+
+  """The description of the todo item"""
+  description: String!
+
+  """The status of the todo item"""
+  completed: Boolean!
+
+  """The date when the todo item was created"""
+  createdAt: String!
+
+  """The date when the todo item was last updated"""
+  updatedAt: String!
+}
+
+type Query {
+  todos: [Todo!]!
+  todo(id: Int!): Todo!
+}
+
+type Mutation {
+  createTodo(createTodoInput: CreateTodoInput!): Todo!
+  updateTodo(updateTodoInput: UpdateTodoInput!): Todo!
+  removeTodo(id: Int!): Todo!
+}
+
+input CreateTodoInput {
+  """The title of the todo item"""
+  title: String!
+
+  """The description of the todo item"""
+  description: String!
+
+  """The status of the todo item"""
+  completed: Boolean!
+}
+
+input UpdateTodoInput {
+  """The title of the todo item"""
+  title: String
+
+  """The description of the todo item"""
+  description: String
+
+  """The status of the todo item"""
+  completed: Boolean
+  id: Int!
+}
