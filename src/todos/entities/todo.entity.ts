@@ -1,11 +1,13 @@
-import { ObjectType, Field, Int } from '@nestjs/graphql';
 import {
   Column,
   CreateDateColumn,
   Entity,
+  ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { Field, Int, ObjectType } from '@nestjs/graphql';
+import { User } from '../../users/entities/user.entity';
 
 @Entity()
 @ObjectType()
@@ -33,6 +35,13 @@ export class Todo {
     description: 'The status of the todo item',
   })
   completed: boolean;
+
+  @ManyToOne(() => User, (user) => user.todos)
+  @Field(() => User, { nullable: true })
+  user?: User;
+
+  @Column({ nullable: true })
+  userId: number;
 
   @CreateDateColumn()
   @Field(() => String, {

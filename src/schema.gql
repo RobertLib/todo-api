@@ -14,6 +14,7 @@ type Todo {
 
   """The status of the todo item"""
   completed: Boolean!
+  user: User
 
   """The date when the todo item was created"""
   createdAt: String!
@@ -22,15 +23,53 @@ type Todo {
   updatedAt: String!
 }
 
+type User {
+  """Unique identifier for the user"""
+  id: Int!
+
+  """Email address of the user"""
+  email: String!
+
+  """Name of the user"""
+  name: String!
+
+  """When the user was created"""
+  createdAt: String!
+
+  """When the user was last updated"""
+  updatedAt: String!
+  todos: [Todo!]
+}
+
+type AuthOutput {
+  token: String!
+  user: User!
+}
+
 type Query {
+  me: User!
+  user(id: Int!): User!
   todos: [Todo!]!
   todo(id: Int!): Todo!
 }
 
 type Mutation {
+  login(loginUserInput: LoginUserInput!): AuthOutput!
+  register(registerUserInput: RegisterUserInput!): AuthOutput!
   createTodo(createTodoInput: CreateTodoInput!): Todo!
   updateTodo(updateTodoInput: UpdateTodoInput!): Todo!
   removeTodo(id: Int!): Todo!
+}
+
+input LoginUserInput {
+  email: String!
+  password: String!
+}
+
+input RegisterUserInput {
+  name: String!
+  email: String!
+  password: String!
 }
 
 input CreateTodoInput {

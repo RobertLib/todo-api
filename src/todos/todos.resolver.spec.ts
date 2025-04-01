@@ -1,17 +1,28 @@
+import { CreateTodoInput } from './dto/create-todo.input';
 import { Test, TestingModule } from '@nestjs/testing';
 import { TodosResolver } from './todos.resolver';
 import { TodosService } from './todos.service';
-import { CreateTodoInput } from './dto/create-todo.input';
 import { UpdateTodoInput } from './dto/update-todo.input';
+import { User } from '../users/entities/user.entity';
 
 describe('TodosResolver', () => {
   let resolver: TodosResolver;
+
+  const mockUser: User = {
+    id: 1,
+    email: 'test@example.com',
+    name: 'Test User',
+    password: 'password',
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+  };
 
   const mockTodo = {
     id: 1,
     title: 'Test Todo',
     description: 'Test Description',
     completed: false,
+    userId: mockUser.id,
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
   };
@@ -52,8 +63,13 @@ describe('TodosResolver', () => {
 
       mockTodoService.create.mockResolvedValue(mockTodo);
 
-      expect(await resolver.createTodo(createTodoInput)).toEqual(mockTodo);
-      expect(mockTodoService.create).toHaveBeenCalledWith(createTodoInput);
+      expect(await resolver.createTodo(createTodoInput, mockUser)).toEqual(
+        mockTodo,
+      );
+      expect(mockTodoService.create).toHaveBeenCalledWith(
+        createTodoInput,
+        mockUser,
+      );
     });
   });
 
@@ -61,8 +77,8 @@ describe('TodosResolver', () => {
     it('should return an array of todos', async () => {
       mockTodoService.findAll.mockResolvedValue([mockTodo]);
 
-      expect(await resolver.findAll()).toEqual([mockTodo]);
-      expect(mockTodoService.findAll).toHaveBeenCalled();
+      expect(await resolver.findAll(mockUser)).toEqual([mockTodo]);
+      expect(mockTodoService.findAll).toHaveBeenCalledWith(mockUser);
     });
   });
 
@@ -70,8 +86,8 @@ describe('TodosResolver', () => {
     it('should return a single todo', async () => {
       mockTodoService.findOne.mockResolvedValue(mockTodo);
 
-      expect(await resolver.findOne(1)).toEqual(mockTodo);
-      expect(mockTodoService.findOne).toHaveBeenCalledWith(1);
+      expect(await resolver.findOne(1, mockUser)).toEqual(mockTodo);
+      expect(mockTodoService.findOne).toHaveBeenCalledWith(1, mockUser);
     });
   });
 
@@ -85,8 +101,14 @@ describe('TodosResolver', () => {
       const updatedTodo = { ...mockTodo, title: 'Updated Title' };
       mockTodoService.update.mockResolvedValue(updatedTodo);
 
-      expect(await resolver.updateTodo(updateTodoInput)).toEqual(updatedTodo);
-      expect(mockTodoService.update).toHaveBeenCalledWith(1, updateTodoInput);
+      expect(await resolver.updateTodo(updateTodoInput, mockUser)).toEqual(
+        updatedTodo,
+      );
+      expect(mockTodoService.update).toHaveBeenCalledWith(
+        1,
+        updateTodoInput,
+        mockUser,
+      );
     });
   });
 
@@ -94,8 +116,8 @@ describe('TodosResolver', () => {
     it('should remove a todo', async () => {
       mockTodoService.remove.mockResolvedValue(mockTodo);
 
-      expect(await resolver.removeTodo(1)).toEqual(mockTodo);
-      expect(mockTodoService.remove).toHaveBeenCalledWith(1);
+      expect(await resolver.removeTodo(1, mockUser)).toEqual(mockTodo);
+      expect(mockTodoService.remove).toHaveBeenCalledWith(1, mockUser);
     });
   });
 });
